@@ -2,6 +2,7 @@ package com.example.esdbackend.service;
 
 import com.example.esdbackend.dto.CustomerRequest;
 import com.example.esdbackend.dto.CustomerResponse;
+import com.example.esdbackend.dto.CustomerUpdateRequest;
 import com.example.esdbackend.dto.LoginRequest;
 import com.example.esdbackend.entity.Customer;
 import com.example.esdbackend.exception.CustomerNotFoundException;
@@ -54,4 +55,19 @@ public class CustomerService {
 
         return jwtHelper.generateToken(request.email());
 }
+
+    public String updateCustomer(String email, CustomerUpdateRequest request) {
+        Customer customer = getCustomer(email);
+        if(request.firstName()!=null) {customer.setFirstName(request.firstName());}
+        if(request.lastName()!=null) {customer.setLastName(request.lastName());}
+        if(request.phone()!=null) {customer.setPhone(request.phone());}
+        customerRepo.save(customer);
+        return "Customer Updated Successfully";
+    }
+
+    public String deleteCustomer(String email) {
+        Customer customer = getCustomer(email);
+        customerRepo.delete(customer);
+        return "Customer Deleted Successfully";
+    }
 }
