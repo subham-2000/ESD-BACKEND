@@ -23,6 +23,13 @@ private final CustomerService customerService;
               return   ResponseEntity.ok(customerService.createCustomer(request));
     }
 
+    @GetMapping("/test")
+    public String test()
+    {
+        return "Working";
+    }
+
+
     @GetMapping("/{email}")
     public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("email") String email) {
         return ResponseEntity.ok(customerService.retrieveCustomer(email));

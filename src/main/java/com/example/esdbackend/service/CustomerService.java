@@ -2,11 +2,14 @@ package com.example.esdbackend.service;
 
 import com.example.esdbackend.dto.CustomerRequest;
 import com.example.esdbackend.dto.CustomerResponse;
+import com.example.esdbackend.dto.LoginRequest;
 import com.example.esdbackend.entity.Customer;
 import com.example.esdbackend.exception.CustomerNotFoundException;
 import com.example.esdbackend.helper.EncryptionService;
+import com.example.esdbackend.helper.JWTHelper;
 import com.example.esdbackend.mapper.CustomerMapper;
 import com.example.esdbackend.repo.CustomerRepo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,7 @@ public class CustomerService {
     private final CustomerRepo customerRepo;
     private final CustomerMapper customerMapper;
     private final EncryptionService encryptionService;
-
+    private final JWTHelper jwtHelper;
    // private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
 
     public String createCustomer(CustomerRequest request) {
@@ -42,4 +45,13 @@ public class CustomerService {
                         format("Cannot update Customer:: No customer found with the provided ID:: %s", email)
                 ));
     }
+
+    public String login( LoginRequest request) {
+    Customer customer = getCustomer(request.email());
+        if(!encryptionService.validates(request.password(), customer.getPassword())) {
+        return "Wrong Password or Email";
+    }
+
+        return jwtHelper.generateToken(request.email());
+}
 }

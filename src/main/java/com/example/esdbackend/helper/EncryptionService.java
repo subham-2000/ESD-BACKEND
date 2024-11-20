@@ -4,10 +4,15 @@ package com.example.esdbackend.helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Service
 @RequiredArgsConstructor
-public class EncryptionService {
+public class EncryptionService  {
+
+
+
 
     private final PasswordEncoder passwordEncoder;
 
@@ -15,4 +20,7 @@ public class EncryptionService {
         return passwordEncoder.encode(password);
     }
 
+    public boolean validates(String password, String encodedPassword) {
+        return passwordEncoder.matches(password, encodedPassword);
+    }
 }
