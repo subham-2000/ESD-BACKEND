@@ -4,9 +4,11 @@ import com.example.esdbackend.dto.CustomerRequest;
 import com.example.esdbackend.dto.CustomerResponse;
 import com.example.esdbackend.entity.Customer;
 import com.example.esdbackend.exception.CustomerNotFoundException;
+import com.example.esdbackend.helper.EncryptionService;
 import com.example.esdbackend.mapper.CustomerMapper;
 import com.example.esdbackend.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static java.lang.String.format;
@@ -17,12 +19,16 @@ public class CustomerService {
 
     private final CustomerRepo customerRepo;
     private final CustomerMapper customerMapper;
+    private final EncryptionService encryptionService;
 
+   // private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
 
     public String createCustomer(CustomerRequest request) {
         Customer customer = customerMapper.toCustomer(request);
+
+        customer.setPassword(encryptionService.encode(customer.getPassword()));
         customerRepo.save(customer);
-        return "Customer created Successfully";
+        return "Customer Created Successfully";
     }
 
     public CustomerResponse retrieveCustomer(String email) {
